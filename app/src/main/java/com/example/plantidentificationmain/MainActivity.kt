@@ -30,7 +30,7 @@ import java.io.IOException
 
 
 class MainActivity : AppCompatActivity() {
-    
+
     var mImageUri: Uri? = null
     var pick_image_request = 1
     val PERMISSION_CODE = 1000
@@ -39,18 +39,16 @@ class MainActivity : AppCompatActivity() {
     private var scientificNameWithoutAuthor: String? = null
 
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val orientation = resources.configuration.orientation
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE){
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setContentView(R.layout.activity_main2)
-        }else{
+        } else {
             setContentView(R.layout.activity_main)
         }
 
-        
+
         val btn_cFile = findViewById<Button>(R.id.uploadFile)
         val btn_camTake = findViewById<Button>(R.id.cameraTake)
         val img_plant = findViewById<ImageView>(R.id.imageUser)
@@ -58,11 +56,9 @@ class MainActivity : AppCompatActivity() {
         val textUser = findViewById<TextView>(R.id.textUser)
         val progressJson = findViewById<ProgressBar>(R.id.progressJson)
 
-        
+
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-                // Callback is invoked after the user selects a media item or closes the
-                // photo picker.
                 if (uri != null) {
                     mImageUri = uri
                     Log.d("PhotoPicker", "Selected URI: $uri")
@@ -73,54 +69,58 @@ class MainActivity : AppCompatActivity() {
                     Log.d("PhotoPicker", "No media selected")
                 }
             }
-        
+
         btn_cFile.setOnClickListener(View.OnClickListener {
 
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         })
 
-        cameraActivityResultLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
-            if (success) {
-                // Handle the captured image URI here
-                Picasso.with(this).load(mImageUri).into(img_plant)
-                if(mImageUri != null){
-                    selectedMediaFile = uriToTempFile(mImageUri!!)
+        cameraActivityResultLauncher =
+            registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+                if (success) {
+                    Picasso.with(this).load(mImageUri).into(img_plant)
+                    if (mImageUri != null) {
+                        selectedMediaFile = uriToTempFile(mImageUri!!)
+                    }
                 }
             }
-        }
-        
-        btn_camTake.setOnClickListener{
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                if(checkSelfPermission(android.Manifest.permission.CAMERA)== PackageManager.PERMISSION_DENIED ||
-                    checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_DENIED
-                        ){
 
-                    val permission = arrayOf(android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    // permission isnot avaliable
+        btn_camTake.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (checkSelfPermission(android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED || checkSelfPermission(
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ) == PackageManager.PERMISSION_DENIED
+                ) {
+
+                    val permission = arrayOf(
+                        android.Manifest.permission.CAMERA,
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
 
 
                     requestPermissions(permission, PERMISSION_CODE)
-                }else{
-                    //permission granted
+                } else {
+
 
                     openCamera()
                 }
-            }else{
-                //android is not marshmellow or lower
+            } else {
+
 
                 openCamera()
             }
         }
 
-        result_button.setOnClickListener{
-            selectedMediaFile?.let { sendImageToPlantNet(it, textUser, progressJson) } ?: Log.d("Plantnet", "File is empty")
+        result_button.setOnClickListener {
+            selectedMediaFile?.let { sendImageToPlantNet(it, textUser, progressJson) }
+                ?: Log.d("Plantnet", "File is empty")
 
         }
 
-     
+
     }
 
-    //starts
+
     private fun openCamera() {
         val values = ContentValues()
         values.put(MediaStore.Images.Media.TITLE, "New Picture")
@@ -133,27 +133,22 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    //ends
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when(requestCode){
+        when (requestCode) {
             PERMISSION_CODE -> {
-                if(grantResults.size >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    // granted
+                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
                     openCamera()
-                }
-                else{
-                    // permission denied
+                } else {
+
                 }
             }
         }
     }
 
-    //ends
 
     private fun uriToTempFile(uri: Uri): File? {
         val inputStream = contentResolver.openInputStream(uri)
@@ -168,42 +163,41 @@ class MainActivity : AppCompatActivity() {
         }
         return null
     }
-//ends
 
     private fun sendImageToPlantNet(mediaFile: File, textView: TextView, progressBar: ProgressBar) {
 
         progressBar.visibility = View.VISIBLE
         textView.text = "Zəhmət olmasa gözləyin"
-        val apiUrl = "https://my-api.plantnet.org/v2/identify/all?include-related-images=false&no-reject=false&lang=en&api-key=2b106f94UgfovuJnuPRVbDPk8u"
+        val apiUrl =
+            "https://my-api.plantnet.org/v2/identify/all?include-related-images=false&no-reject=false&lang=en&api-key=2b106f94UgfovuJnuPRVbDPk8u"
 
         val client = OkHttpClient()
 
-        val request = Request.Builder()
-            .url(apiUrl)
-            .header("accept", "application/json")
-            .header("Content-Type", "multipart/form-data")
-            .post(
-                MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("images", mediaFile.name, mediaFile.asRequestBody("image/jpeg".toMediaTypeOrNull()))
-                    .build()
-            )
-            .build()
+        val request = Request.Builder().url(apiUrl).header("accept", "application/json")
+            .header("Content-Type", "multipart/form-data").post(
+                MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart(
+                        "images",
+                        mediaFile.name,
+                        mediaFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                    ).build()
+            ).build()
 
         client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 val jsonString = response.body?.string()
                 if (response.isSuccessful && jsonString != null) {
-                    // Process the JSON response containing plant identification results here
+
                     Log.d("JSON Response", "$jsonString")
 
                     val jsonObject = JSONObject(jsonString)
 
-                    // Extract the "scientificName" field
-                    val species = jsonObject.optJSONArray("results")?.optJSONObject(0)?.optJSONObject("species")
-                    scientificNameWithoutAuthor = species?.optString("scientificNameWithoutAuthor", "")
 
-                    // Update UI with plant identification results if needed
+                    val species = jsonObject.optJSONArray("results")?.optJSONObject(0)
+                        ?.optJSONObject("species")
+                    scientificNameWithoutAuthor =
+                        species?.optString("scientificNameWithoutAuthor", "")
+
+
                     Log.d("JSON Response", "$scientificNameWithoutAuthor")
 
                     runOnUiThread {
@@ -213,7 +207,7 @@ class MainActivity : AppCompatActivity() {
 
 
                 } else {
-                    // Handle non-successful response (e.g., error status code)
+
                     Log.d("API Error. Status code", "${response.code}")
                     progressBar.visibility = View.GONE
                 }
@@ -221,13 +215,12 @@ class MainActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
-                // Handle network request failure here
+
                 Log.d("API Error. Status code", "${e.message}")
                 progressBar.visibility = View.GONE
             }
         })
     }
-
 
 
 }
