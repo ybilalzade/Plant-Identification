@@ -1,95 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.yagubbilalzade.bitkitanima.MainActivity">
+    android:background="#65B741"
+    android:orientation="horizontal">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/uploadFile"
-        android:layout_width="250dp"
-        android:layout_height="60dp"
-        android:layout_marginBottom="28dp"
-        android:background="@drawable/buttonfile"
-        android:text="Fayllar"
-        android:textColor="#FFFFFF"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/resultBtn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.884"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/resultBtn"
-        android:layout_width="250dp"
-        android:layout_height="60dp"
-        android:layout_marginBottom="40dp"
-        android:background="@drawable/buttonresult"
-        android:text="Cavab"
-        android:textColor="#FFFFFF"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.884"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/cameraTake"
-        android:layout_width="250dp"
-        android:layout_height="60dp"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/buttoncamera"
-        android:text="Kamera"
-        android:textColor="#FFFFFF"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/uploadFile"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.889"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/imageUser"
-        android:layout_width="343dp"
-        android:layout_height="328dp"
-        android:layout_marginTop="28dp"
-        android:scaleType="fitCenter"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.105"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/imageviewuser"
-        tools:ignore="ImageContrastCheck" />
-
-    <TextView
-        android:id="@+id/textUser"
-        android:layout_width="362dp"
-        android:layout_height="52dp"
-        android:layout_marginBottom="34dp"
-        android:singleLine="false"
-        android:text="Şəkli yüklə"
-        android:textAlignment="center"
-        android:textSize="25sp"
-        app:layout_constraintBottom_toTopOf="@+id/cameraTake"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.938"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/progressJson"
-        android:layout_width="71dp"
-        android:layout_height="56dp"
-        android:indeterminate="true"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/cameraTake"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.535"
-        app:layout_constraintStart_toStartOf="parent"
-
-        app:layout_constraintTop_toBottomOf="@+id/textUser"
-        app:layout_constraintVertical_bias="0.0" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="0dp"
+        android:background="@drawable/tophalfport"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/imageUser"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="30dp"/>
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_margin="30dp">
+
+        <TextView
+            android:id="@+id/textUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="40sp"
+            android:textColor="#FBF6EE"
+            android:textAlignment="center"
+            android:layout_marginBottom="10dp"
+            android:text="Şekili yüklə"/>
+
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/cameraTake"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Kamera"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button"/>
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/uploadFile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fayllar"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button"/>
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/resultBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cavab"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button"/>
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+
+            android:layout_marginTop="10dp"
+            android:id="@+id/progressJson"
+            android:layout_width="71dp"
+            android:layout_height="56dp"
+            android:indeterminate="true"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+
+
+    </LinearLayout>
+
+</LinearLayout>
